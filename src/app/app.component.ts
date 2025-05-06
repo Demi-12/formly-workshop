@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core'
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core'
-import { FormBuilder, FormGroup } from '@angular/forms'
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors } from '@angular/forms'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
+
 export class AppComponent implements OnInit {
   formValuesJson: string = ''
   public languages = [
@@ -38,7 +39,34 @@ export class AppComponent implements OnInit {
         {
           props: { label: 'Detail' },
           fieldGroup: [
-            //Configura aqui la seccion 2
+            {
+              key: 'title',
+              type: 'input',
+              props: {
+                label: 'Título',
+                required: true,
+              }
+           },
+           {
+            key: 'bugDescription',
+            type: 'text-area',
+            props: {
+              label: 'Descripción del bug',
+              required: false,
+            },
+            validators:{
+              validation: [minCharactersValidator]
+            }
+           
+         }, {
+          key: 'geography',
+          type: 'input',
+          props: {
+            label: 'Geografía',
+            required: true,
+          }
+       },
+          
           ],
         },
         {
@@ -87,4 +115,12 @@ export class AppComponent implements OnInit {
   submit() {
     alert(JSON.stringify(this.model))
   }
+}
+
+
+export function minCharactersValidator(control: AbstractControl): ValidationErrors | null{
+  if (control.value) {
+    return control.value.length > 50 ? null : {'minChars': true}
+  }
+  return {'minChars': true}
 }
